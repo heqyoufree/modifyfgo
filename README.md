@@ -14,9 +14,11 @@
 2. 执行下列命令  
 ``
 npm install -g install anyproxy
+``  
+``
 node fgo.js
 ``
-3. 设置代理
-4. 在手机\模拟器上安装证书
+1. 设置代理
+2. 在手机\模拟器上安装证书
 ### mitmproxy
 待填坑
