@@ -12,8 +12,8 @@
 ### anyproxy
 1. 安装[Node.js](https://nodejs.org)
 2. 执行下列命令  
-``bash
-npm install -g install anyproxy  
+``
+npm install -g install anyproxy
 node fgo.js
 ``
 3. 设置代理
