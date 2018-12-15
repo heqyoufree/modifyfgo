@@ -9,7 +9,7 @@ const profile = 'profile/'
 const proxyPort = 25565
 // Web UI
 const webInterface = true
-// Web Port, when unavailble
+// Web Port
 const webInterfacePort = 8002
 // show anyproxy log in console
 const silent = true
