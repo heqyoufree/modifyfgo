@@ -16,7 +16,7 @@ $body_array = explode("&", $body);
 
 $setting = readJSON(substr($body_array[12], 7));
 
-if ($setting['battleCancel']) {
+if ($setting['uBatCancel']) {
     $body_result = substr($body_array[11], 7);
     $result_json_decoded = json_decode($body_result, true);
     $result_json_decoded['battleResult'] = 1;

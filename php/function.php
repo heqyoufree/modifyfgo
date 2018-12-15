@@ -11,7 +11,7 @@
  * @link     https://github.com/heqyoufree/ModifyFGO
  */
 
-$setting_path = "settings/";
+require_once 'value.php';
 
 /**
  * Read user setting
@@ -24,6 +24,7 @@ function readJSON($uid)
 {
     return json_decode(file_get_contents($setting_path.$uid.".json"), true);
 }
+
 /**
  * Write user setting
  * 
@@ -36,6 +37,7 @@ function writeJSON($uid, $content)
 {
     return file_put_contents($setting_path.$uid.".json", $content);
 }
+
 /**
  * Replace the data of svt
  * 

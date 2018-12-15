@@ -21,11 +21,11 @@ $setting = readJSON($body_json_decoded['cache']['replaced']['battle']['userId'])
 foreach ($body_json_decoded['cache']['replaced']['battle'][0]['battleInfo']['userSvt'] as $svts) {
     foreach ($svts as $sv) {
         if (isset($sv['hpGaugeType'])) {
-            if ($setting['enemyActNumSwitch']) {
-                $sv['maxActNum'] = $setting['enemyActNumto'];
+            if ($setting['eActNum'] > -1) {
+                $sv['maxActNum'] = $setting['eActNum'];
             }
-            if ($setting['enemyChargeTurnSwitch']) {
-                $sv['chargeTurn'] = $setting['enemyChargeTurnto'];
+            if ($setting['eChargeTurn'] > -1) {
+                $sv['chargeTurn'] = $setting['eChargeTurn'];
             }
             continue;
         }
@@ -34,49 +34,49 @@ foreach ($body_json_decoded['cache']['replaced']['battle'][0]['battleInfo']['use
             $sv['hp'] = $sv['hp']*$setting['uHp'];
             $sv['atk'] = $sv['atk']*$setting['uAtk'];
 
-            if ($setting['skillLv']) {
+            if ($setting['uSkillLv']) {
                 $sv['skillLv1'] = 10;
                 $sv['skillLv2'] = 10;
                 $sv['skillLv3'] = 10;
             }
 
-            if ($setting['tdLv']) {
+            if ($setting['uTdLv']) {
                 $sv['treasureDeviceLv'] = 5;
             }
 
-            if ($setting['limitCountSwitch']) {
+            if ($setting['uLimitCount']) {
                 $sv['limitCount'] = 4;
                 $sv['dispLimitCount'] = 4;
                 $sv['commandCardLimitCount'] = 3;
                 $sv['iconLimitCount'] = 4;
             }
 
-            if ($setting['replaceSvtSwitch']) {
-                if (($setting['replaceSvt1'] && $sv['svtId'] == "600200") || $setting['replaceSvtSpinner'] == 1) {
+            if ($setting['uRpSvt']) {
+                if (($setting['uRpSvt1'] && $sv['svtId'] == "600200") || $setting['replaceSvtSpinner'] == 1) {
                        replaceSvt($sv, 0);
                 }
-                if (($setting['replaceSvt2'] && $sv['svtId'] == "600100") || $setting['replaceSvtSpinner'] == 2) {
+                if (($setting['uRpSvt2'] && $sv['svtId'] == "600100") || $setting['replaceSvtSpinner'] == 2) {
                         replaceSvt($sv, 1);
                 }
-                if (($setting['replaceSvt3'] && $sv['svtId'] == "601400") || $setting['replaceSvtSpinner'] == 3) {
+                if (($setting['uRpSvt3'] && $sv['svtId'] == "601400") || $setting['replaceSvtSpinner'] == 3) {
                     replaceSvt($sv, 2);
                 }
-                if (($setting['replaceSvt4'] && $sv['svtId'] == "700900") || $setting['replaceSvtSpinner'] == 4) {
+                if (($setting['uRpSvt4'] && $sv['svtId'] == "700900") || $setting['replaceSvtSpinner'] == 4) {
                     replaceSvt($sv, 3);
                 }
-                if (($setting['replaceSvt5'] && $sv['svtId'] == "700500") || $setting['replaceSvtSpinner'] == 5) {
+                if (($setting['uRpSvt5'] && $sv['svtId'] == "700500") || $setting['replaceSvtSpinner'] == 5) {
                     replaceSvt($sv, 4);
                 }
-                if (($setting['replaceSvt6'] && $sv['svtId'] == "701500") || $setting['replaceSvtSpinner'] == 6) {
+                if (($setting['uRpSvtt6'] && $sv['svtId'] == "701500") || $setting['replaceSvtSpinner'] == 6) {
                        replaceSvt($sv, 5);
                     $sv['treasureDeviceLv'] = 1;
                 }
                 continue;
             }
         }
-        if ($setting['replaceCraftSwitch'] && isset($sv["parentSvtId"])) {
+        if ($setting['uRpCarft'] && isset($sv["parentSvtId"])) {
             $carftMap = [990068,990645,990066,990062,990131,990095,990113,990064,990333,990629,990327,990306];
-            $sv["skillId1"] = $carftMap[$setting['replaceCraftSpinner']-1];
+            $sv["skillId1"] = $carftMap[$setting['uRpcarftSpinner']-1];
         }
     }
 }
@@ -84,6 +84,6 @@ unset($sv);
 unset($svts);
 $response_json_encoded = json_encode($body_json_decoded);
 $response_encoded = base64_encode($response_json_encoded);
-//$response = urlencode($response_encoded);
+$response = urlencode($response_encoded);
 echo $response_encoded;
 ?>
