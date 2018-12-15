@@ -1,5 +1,14 @@
 <?php
-include_once 'function.php';
+/**
+ * Modify the data of battle setup.
+ * 
+ * @category ModifyFGO
+ * @package  ModifyFGO
+ * @author   heqyou_free <heqyoufreedom@126.com>
+ * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html  GNU General Public License, version 2
+ * @link     https://github.com/heqyoufree/ModifyFGO
+ */
+require_once 'function.php';
 echo var_dump($_POST);
 $body = urldecode($_POST["requestData"]);
 $body_decoded = base64_decode($body);
