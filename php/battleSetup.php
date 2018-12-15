@@ -2,6 +2,8 @@
 /**
  * Modify the data of battle setup.
  * 
+ * PHP version 7.2.12
+ * 
  * @category ModifyFGO
  * @package  ModifyFGO
  * @author   heqyou_free <heqyoufreedom@126.com>

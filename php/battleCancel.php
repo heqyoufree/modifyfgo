@@ -2,6 +2,8 @@
 /**
  * Modify the data of battle cancel.
  * 
+ * PHP version 7.2.12
+ * 
  * @category ModifyFGO
  * @package  ModifyFGO
  * @author   heqyou_free <heqyoufreedom@126.com>
@@ -11,7 +13,7 @@
 require_once "function.php";
 $body = urldecode($_POST['requestData']);
 $body_array = explode("&", $body);
-    
+
 $setting = readJSON(substr($body_array[12], 7));
 
 if ($setting['battleCancel']) {
