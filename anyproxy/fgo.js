@@ -1,3 +1,15 @@
+/*
+ * 
+ * ATTENTION!!!
+ * This script cannot get sign.
+ * If you want to add this function, please modify line 107 and 341-318
+ * Thanks for using.
+ * 
+ */
+
+
+
+
 'use strict'
 const AnyProxy = require('anyproxy')
 const exec = require('child_process').exec
@@ -41,11 +53,11 @@ const options = {
     * beforeSendRequest (requestDetail) {
       if (requestDetail.url.indexOf('ac.php') > 0 && requestDetail.requestData.indexOf('key=battleresult') > 0) {
         // get userid
-        var uid = getUserID(requestDetail.url)
+        var uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
         // read setting
-        var options = readSetting(uid)
+        var options = readJSON(profile + uid + 'options.json')
         if (options.battleCancel === true) {
-          console.log(getTimestamp() + '-' + uid + '撤退胜利')
+          console.log(new Date().getTime() + '-' + uid + '撤退胜利')
           // split request data with &
           var data = requestDetail.requestData.toString().split('&')
           // url decode
@@ -91,12 +103,12 @@ const options = {
         // change into JSON object
         var decJson = JSON.parse(jsonStr)
 
-        // need XFGO
-        decJson.sign = ''
+        // needs you get sign by yourself
+        // decJson.sign = getsign()
 
         // get setting
-        var uid = getUserID(requestDetail.url)
-        var options = readSetting(uid)
+        var uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
+        var options = readJSON(profile + uid + 'options.json')
         var uHp = options.uHp
         var uAtk = options.uAtk
         var limitCountSwitch = options.limitCountSwitch
@@ -118,7 +130,7 @@ const options = {
         var replaceCraftSpinner = options.replaceCraftSpinner
 
         if (decJson['cache']['replaced']['battle'] !== undefined) {
-          console.log(getTimestamp() + '-' + uid + '进入战斗')
+          console.log(new Date().getTime() + '-' + uid + '进入战斗')
           // foreach does not work here, i have no idea about this.
           var svts = decJson['cache']['replaced']['battle'][0]['battleInfo']['userSvt']
           for (var i = 0; i < svts.length; i++) {
@@ -208,8 +220,8 @@ const options = {
             // ----------------------------------------
             // carft
             if (replaceCraftSwitch && sv['parentSvtId'] !== undefined) {
-              var carftMap = [990068, 990645, 990066, 990062, 990131, 990095, 990113, 990064, 990333, 990629, 990327, 990306]
-              sv['skillId1'] = carftMap[replaceCraftSpinner - 1]
+              var carftMap = readJSON('data.json')
+              sv['skillId1'] = carftMap.craft[replaceCraftSpinner-1]
             }
             // ----------------------------------------
           }
@@ -241,7 +253,7 @@ const options = {
 
     // when get https request only deal with fgo
     * beforeDealHttpsRequest (requestDetail) {
-      return requestDetail.host.indexOf('bilibiligame.net') > 0
+      return !requestDetail.host.indexOf('bilibiligame.net') > 0
     }
   },
   silent: silent
@@ -276,8 +288,7 @@ function customUrlDecode (data) {
 }
 
 function replaceSvt (sv, id) {
-  var str = '{"svt":[{"id":602500,"tdid":602501,"sk1":41650,"sk2":13553,"sk3":324650,"hp":14246,"atk":12767,"limit":false},{"id":500800,"tdid":500801,"sk1":321550,"sk2":322550,"sk3":323650,"hp":15259,"atk":11546,"limit":false},{"id":501900,"tdid":501901,"sk1":82550,"sk2":100551,"sk3":101551,"hp":14409,"atk":11598,"limit":false},{"id":500300,"tdid":500302,"sk1":23650,"sk2":25550,"sk3":108655,"hp":15359,"atk":11546,"limit":false},{"id":702300,"tdid":702301,"sk1":89550,"sk2":224550,"sk3":225550,"hp":14500,"atk":12556,"limit":false},{"id":9935510,"tdid":9935511,"sk1":89550,"sk2":321550,"sk3":108655,"hp":3215500,"atk":3215500,"limit":true}]}'
-  var data = JSON.parse(str)
+  var data = readJSON('data.json')
   sv['svtId'] = data.svt[id].id
   sv['treasureDeviceId'] = data.svt[id].tdid
   sv['skillId1'] = data.svt[id].sk1
@@ -293,19 +304,15 @@ function replaceSvt (sv, id) {
   }
 }
 
-function readSetting (uid) {
+function readJSON (file) {
   if (uid != null) {
-    var options = JSON.parse(fs.readFileSync(profile + uid + 'options.json'))
+    var options = JSON.parse(fs.readFileSync(file))
   }
   return options
 }
 
-function getUserID (url) {
-  var uidreg = /(?<=userId=)\d{12}/gi
-  var uid = url.match(uidreg)
-  return uid
-}
+/*
+function getsign () {
 
-function getTimestamp () {
-  return new Date().getTime()
 }
+*/
