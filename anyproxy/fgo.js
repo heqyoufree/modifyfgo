@@ -1,14 +1,9 @@
 /*
- * 
  * ATTENTION!!!
  * This script cannot get sign.
  * If you want to add this function, please modify line 107 and 341-318
  * Thanks for using.
- * 
  */
-
-
-
 
 'use strict'
 const AnyProxy = require('anyproxy')
@@ -221,7 +216,7 @@ const options = {
             // carft
             if (replaceCraftSwitch && sv['parentSvtId'] !== undefined) {
               var carftMap = readJSON('data.json')
-              sv['skillId1'] = carftMap.craft[replaceCraftSpinner-1]
+              sv['skillId1'] = carftMap.craft[replaceCraftSpinner - 1]
             }
             // ----------------------------------------
           }
@@ -305,14 +300,10 @@ function replaceSvt (sv, id) {
 }
 
 function readJSON (file) {
-  if (uid != null) {
-    var options = JSON.parse(fs.readFileSync(file))
-  }
-  return options
+  return JSON.parse(fs.readFileSync(file))
 }
 
 /*
 function getsign () {
-
 }
 */
