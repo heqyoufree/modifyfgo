@@ -13,6 +13,9 @@
 
 require_once 'value.php';
 
+$encode = ['%22', '%27', '%3a', '%2c', '%5b', '%5d', '%7b', '%7d'];
+$decode = ['"', '\'', ':', ',', '[', ']', '{', '}'];
+
 /**
  * Read user setting
  * 
@@ -63,4 +66,29 @@ function replaceSvt($sv, $id)
         $sv['iconLimitCount'] = 0;
     }
 }
+
+/** 
+ * URL encode data
+ * 
+ * @param string $data data that need to be encode
+ * 
+ * @return string
+ */
+function customURLencode($data)
+{
+    return str_replace($decode, $encode, $data);
+}
+
+/** 
+ * URL decode data
+ * 
+ * @param string $data data that need to be decode
+ * 
+ * @return string
+ */
+function customURLdecode($data)
+{
+    return str_replace($encode, $decode, $data);
+}
+
 ?>

@@ -12,7 +12,7 @@
  */
 require_once 'function.php';
 echo var_dump($_POST);
-$body = urldecode($_POST["requestData"]);
+$body = customURLdecode($_POST["requestData"]);
 $body_decoded = base64_decode($body);
 $body_json_decoded = json_decode($body_decoded, true);
     
@@ -84,6 +84,6 @@ unset($sv);
 unset($svts);
 $response_json_encoded = json_encode($body_json_decoded);
 $response_encoded = base64_encode($response_json_encoded);
-$response = urlencode($response_encoded);
+$response = customURLencode($response_encoded);
 echo $response_encoded;
 ?>
