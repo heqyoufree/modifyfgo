@@ -103,7 +103,7 @@ const options = {
         // replace %3D to =
         rawBody = rawBody.replace(/%3D/g, '=')
         // base64 encode
-        var jsonStr = Buffer.alloc(rawBody, 'base64').toString()
+        var jsonStr = new Buffer(rawBody, 'base64').toString()
         // change into JSON object
         var decJson = JSON.parse(jsonStr)
 
@@ -225,10 +225,10 @@ const options = {
         // replace / to \/
         newJsonStr = newJsonStr.replace(/\//g, '\\/')
         // base64 decode
-        var newBodyStr = Buffer.alloc(newJsonStr).toString('base64')
+        var newBodyStr = new Buffer(newJsonStr).toString('base64')
         // replace = to %3D
         newBodyStr = newBodyStr.replace(/=/g, '%3D')
-        var newBody = Buffer.alloc(newBodyStr)
+        var newBody = new Buffer(newBodyStr)
         response.body = newBody
         return {
           response: response
