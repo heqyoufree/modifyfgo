@@ -1,6 +1,6 @@
 # ModifyFGO
 ## 0x00 给点早餐钱？
-![]()
+![](https://github.com/heqyoufree/ModifyFGO/raw/master/%E6%B1%82%E7%82%B9%E6%97%A9%E9%A4%90%E9%92%B1.png)
 ## 0x01 开源协议
 [GNU General Public License, version 2](http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html)
 禁止商业用途
