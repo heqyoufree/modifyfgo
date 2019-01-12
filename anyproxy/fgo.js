@@ -1,7 +1,6 @@
 /*
  * ATTENTION!!!
  * This script cannot get sign.
- * If you want to add this function, please modify line 107 and 341-318
  * Thanks for using.
  */
 
@@ -10,16 +9,21 @@ const AnyProxy = require('anyproxy')
 const exec = require('child_process').exec
 const fs = require('fs')
 
+// USER SETTING
 // user setting path
 const profile = 'profile/'
 // Proxy Port
-const proxyPort = 25565
+const proxyPort = 8001
 // Web UI
-const webInterface = true
+const webInterface = false
 // Web Port
 const webInterfacePort = 8002
 // show anyproxy log in console
 const silent = true
+
+// PROGRAM STATIC VARIABLES
+const decode = ['"', "'", ':', ',', '\\[', '\\]', '\\{', '\\}']
+const encode = ['%22', '%27', '%3a', '%2c', '%5b', '%5d', '%7b', '%7d']
 
 // check cert
 if (!AnyProxy.utils.certMgr.ifRootCAFileExists()) {
@@ -35,6 +39,11 @@ if (!AnyProxy.utils.certMgr.ifRootCAFileExists()) {
       console.error('根证书生成失败', error)
     }
   })
+}
+
+// check setting folder
+if (!fs.existsSync(profile)) {
+  fs.mkdirSync(profile)
 }
 
 const options = {
@@ -56,20 +65,20 @@ const options = {
           // split request data with &
           var data = requestDetail.requestData.toString().split('&')
           // url decode
-          data[11] = customUrlDecode(data[11])
+          data[11] = replaceWithArray(data[11], encode, decode)
           // get result
           var json = JSON.parse(data[11].substring(7))
           if (json.battleResult === 3) {
             // set result to win
             json.battleResult = 1
-            // set turn num to random
+            // set turn num to 11
             json.elapsedTurn = 11
             // clear alive beast
             json.aliveUniqueIds = []
             // change JSON object into String
             var temp = JSON.stringify(json)
             // encode result
-            data[11] = 'result=' + customUrlEncode(temp)
+            data[11] = 'result=' + replaceWithArray(temp, decode, encode)
             // connect array with &
             var newRequestData = ''
             data.forEach(value => {
@@ -104,25 +113,6 @@ const options = {
         // get setting
         var uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
         var options = readJSON(profile + uid + 'options.json')
-        var uHp = options.uHp
-        var uAtk = options.uAtk
-        var limitCountSwitch = options.limitCountSwitch
-        var skillLv = options.skillLv
-        var tdLv = options.tdLv
-        var enemyActNumSwitch = options.enemyActNumSwitch
-        var enemyActNumTo = options.enemyActNumTo
-        var enemyChargeTurnSwitch = options.enemyChargeTurnSwitch
-        var enemyChargeTurnto = options.enemyChargeTurnto
-        var replaceSvtSwitch = options.replaceSvtSwitch
-        var replaceSvtSpinner = options.replaceSvtSpinner
-        var replaceSvt1 = options.replaceSvt1
-        var replaceSvt2 = options.replaceSvt2
-        var replaceSvt3 = options.replaceSvt3
-        var replaceSvt4 = options.replaceSvt4
-        var replaceSvt5 = options.replaceSvt5
-        var replaceSvt6 = options.replaceSvt6
-        var replaceCraftSwitch = options.replaceCraftSwitch
-        var replaceCraftSpinner = options.replaceCraftSpinner
 
         if (decJson['cache']['replaced']['battle'] !== undefined) {
           console.log(new Date().getTime() + '-' + uid + '进入战斗')
@@ -134,12 +124,12 @@ const options = {
             // enemy
             if (sv['hpGaugeType'] !== undefined) {
               // replace enemy act num
-              if (enemyActNumSwitch) {
-                sv['maxActNum'] = enemyActNumTo
+              if (options.enemyActNumSwitch) {
+                sv['maxActNum'] = options.enemyActNumTo
               }
               // replace enemy charge turn
-              if (enemyChargeTurnSwitch) {
-                sv['chargeTurn'] = enemyChargeTurnto
+              if (options.enemyChargeTurnSwitch) {
+                sv['chargeTurn'] = options.enemyChargeTurnto
               }
               continue
             }
@@ -150,31 +140,31 @@ const options = {
             if (sv['status'] !== undefined && sv['userId'] !== undefined && sv['userId'] !== '0' && sv['userId'] !== 0) {
               // replace svt hp
               if (typeof sv['hp'] === 'number') {
-                sv['hp'] = parseInt(sv['hp']) * uHp
+                sv['hp'] = parseInt(sv['hp']) * options.uHp
               } else {
-                sv['hp'] = String(parseInt(sv['hp']) * uHp)
+                sv['hp'] = String(parseInt(sv['hp']) * options.uHp)
               }
               // replace svt atk
               if (typeof sv['atk'] === 'number') {
-                sv['atk'] = parseInt(sv['atk']) * uAtk
+                sv['atk'] = parseInt(sv['atk']) * options.uAtk
               } else {
-                sv['atk'] = String(parseInt(sv['atk']) * uAtk)
+                sv['atk'] = String(parseInt(sv['atk']) * options.uAtk)
               }
 
               // replace skill level
-              if (skillLv) {
+              if (options.skillLv) {
                 sv['skillLv1'] = 10
                 sv['skillLv2'] = 10
                 sv['skillLv3'] = 10
               }
 
               // replace treasure device level
-              if (tdLv) {
+              if (options.tdLv) {
                 sv['treasureDeviceLv'] = 5
               }
 
               // replace limit count
-              if (limitCountSwitch) {
+              if (options.limitCountSwitch) {
                 sv['limitCount'] = 4
                 sv['dispLimitCount'] = 4
                 sv['commandCardLimitCount'] = 3
@@ -182,23 +172,23 @@ const options = {
               }
 
               // replace svt
-              if (replaceSvtSwitch) {
-                if ((replaceSvt1 && sv['svtId'] === '600200') || replaceSvtSpinner === 1) {
+              if (options.replaceSvtSwitch) {
+                if ((options.replaceSvt1 && sv['svtId'] === '600200') || options.replaceSvtSpinner === 1) {
                   replaceSvt(sv, 0)
                 }
-                if ((replaceSvt2 && sv['svtId'] === '600100') || replaceSvtSpinner === 2) {
+                if ((options.replaceSvt2 && sv['svtId'] === '600100') || options.replaceSvtSpinner === 2) {
                   replaceSvt(sv, 1)
                 }
-                if ((replaceSvt3 && sv['svtId'] === '601400') || replaceSvtSpinner === 3) {
+                if ((options.replaceSvt3 && sv['svtId'] === '601400') || options.replaceSvtSpinner === 3) {
                   replaceSvt(sv, 2)
                 }
-                if ((replaceSvt4 && sv['svtId'] === '700900') || replaceSvtSpinner === 4) {
+                if ((options.replaceSvt4 && sv['svtId'] === '700900') || options.replaceSvtSpinner === 4) {
                   replaceSvt(sv, 3)
                 }
-                if ((replaceSvt5 && sv['svtId'] === '700500') || replaceSvtSpinner === 5) {
+                if ((options.replaceSvt5 && sv['svtId'] === '700500') || options.replaceSvtSpinner === 5) {
                   replaceSvt(sv, 4)
                 }
-                if ((replaceSvt6 && sv['svtId'] === '701500') || replaceSvtSpinner === 6) {
+                if ((options.replaceSvt6 && sv['svtId'] === '701500') || options.replaceSvtSpinner === 6) {
                   // replaceSvt(sv, 9939320, 507, 960840, 960845, 89550, 3215000, 3215000, true)
                   // replaceSvt(sv, 9939360, 100, 35551, 960845, 89550, 3215000, 3215000, true)
                   // replaceSvt(sv, 9939370, 9939371, 960842, 960843, 36450, 3215000, 3215000, true)
@@ -214,9 +204,9 @@ const options = {
 
             // ----------------------------------------
             // carft
-            if (replaceCraftSwitch && sv['parentSvtId'] !== undefined) {
+            if (options.replaceCraftSwitch && sv['parentSvtId'] !== undefined) {
               var carftMap = readJSON('data.json')
-              sv['skillId1'] = carftMap.craft[replaceCraftSpinner - 1]
+              sv['skillId1'] = carftMap.craft[options.replaceCraftSpinner - 1]
             }
             // ----------------------------------------
           }
@@ -259,26 +249,11 @@ console.log('科技服务端已启动')
 console.log('端口号：' + proxyPort)
 console.log('网页端口号：' + webInterfacePort)
 
-function customUrlEncode (data) {
-  data = data.replace(/"/g, '%22')
-  data = data.replace(/'/g, '%27')
-  data = data.replace(/:/g, '%3a')
-  data = data.replace(/,/g, '%2c')
-  data = data.replace(/\[/g, '%5b')
-  data = data.replace(/]/g, '%5d')
-  data = data.replace(/{/g, '%7b')
-  data = data.replace(/}/g, '%7d')
-  return data
-}
-function customUrlDecode (data) {
-  data = data.replace(/%22/g, '"')
-  data = data.replace(/%27/g, "'")
-  data = data.replace(/%3a/g, ':')
-  data = data.replace(/%2c/g, ',')
-  data = data.replace(/%5b/g, '[')
-  data = data.replace(/%5d/g, ']')
-  data = data.replace(/%7b/g, '{')
-  data = data.replace(/%7d/g, '}')
+function replaceWithArray (data, array1, array2) {
+  for (var i = 0; i < array1.length; i++) {
+    data = data.replace(new RegExp(array1[i], 'g'), array2[i])
+  }
+  data = data.replace(/\\/g, '')
   return data
 }
 

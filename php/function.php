@@ -10,9 +10,7 @@
  * @license  http://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html  GNU General Public License, version 2
  * @link     https://github.com/heqyoufree/ModifyFGO
  */
-
 require_once 'value.php';
-
 $encode = ['%22', '%27', '%3a', '%2c', '%5b', '%5d', '%7b', '%7d'];
 $decode = ['"', '\'', ':', ',', '[', ']', '{', '}'];
 
@@ -21,7 +19,7 @@ $decode = ['"', '\'', ':', ',', '[', ']', '{', '}'];
  * 
  * @param string $uid id of user
  * 
- * @return array
+ * @return array json array of user setting which belongs to the id that is given
  */
 function readJSON($uid)
 {
@@ -34,7 +32,7 @@ function readJSON($uid)
  * @param string $uid     id of user
  * @param string $content setting content
  * 
- * @return boolean
+ * @return boolean is succuessful
  */
 function writeJSON($uid, $content)
 {
@@ -72,7 +70,7 @@ function replaceSvt($sv, $id)
  * 
  * @param string $data data that need to be encode
  * 
- * @return string
+ * @return string data that has been encoded
  */
 function customURLencode($data)
 {
@@ -84,7 +82,7 @@ function customURLencode($data)
  * 
  * @param string $data data that need to be decode
  * 
- * @return string
+ * @return string data that has been decoded
  */
 function customURLdecode($data)
 {
