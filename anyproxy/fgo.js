@@ -236,7 +236,6 @@ const options = {
       }
     },
 
-    // when get https request only deal with fgo
     * beforeDealHttpsRequest (requestDetail) {
       return !requestDetail.host.indexOf('bilibiligame.net') > 0
     }
