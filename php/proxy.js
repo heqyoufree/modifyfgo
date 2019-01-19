@@ -25,8 +25,7 @@ if (!AnyProxy.utils.certMgr.ifRootCAFileExists()) {
     if (!error) {
       const certDir = require('path').dirname(keyPath)
       console.log('根证书生成成功，请在手机上安装,证书本地路径: ', certDir)
-      const isWin = /^win/.test(process.platform)
-      if (isWin) {
+      if (/^win/.test(process.platform)) {
         exec('start .', { cwd: certDir })
       }
     } else {
