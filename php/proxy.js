@@ -50,7 +50,7 @@ const options = {
 
     * beforeSendResponse (requestDetail, responseDetail) {
       var response = Object.assign({}, responseDetail.response)
-      response.body = new Buffer(sendPOST(response.body.toString(), '/battleSetup.php'))
+      response.body = Buffer.from(sendPOST(response.body.toString(), '/battleSetup.php'))
       return {
         response: response
       }

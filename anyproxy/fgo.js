@@ -21,10 +21,6 @@ const webInterfacePort = 8002
 // show anyproxy log in console
 const silent = true
 
-// PROGRAM STATIC VARIABLES
-const decode = ['"', "'", ':', ',', '\\[', '\\]', '\\{', '\\}']
-const encode = ['%22', '%27', '%3a', '%2c', '%5b', '%5d', '%7b', '%7d']
-
 // check cert
 if (!AnyProxy.utils.certMgr.ifRootCAFileExists()) {
   AnyProxy.utils.certMgr.generateRootCA((error, keyPath) => {
@@ -65,7 +61,7 @@ const options = {
           // split request data with &
           var data = requestDetail.requestData.toString().split('&')
           // url decode
-          data[11] = replaceWithArray(data[11], encode, decode)
+          data[11] = customURLdecode(data[11])
           // get result
           var json = JSON.parse(data[11].substring(7))
           if (json.battleResult === 3) {
@@ -78,7 +74,7 @@ const options = {
             // change JSON object into String
             var temp = JSON.stringify(json)
             // encode result
-            data[11] = 'result=' + replaceWithArray(temp, decode, encode)
+            data[11] = 'result=' + customURLencode(temp)
             // connect array with &
             var newRequestData = ''
             data.forEach(value => {
@@ -103,7 +99,7 @@ const options = {
         // replace %3D to =
         rawBody = rawBody.replace(/%3D/g, '=')
         // base64 encode
-        var jsonStr = new Buffer(rawBody, 'base64').toString()
+        var jsonStr = Buffer.from(rawBody, 'base64').toString()
         // change into JSON object
         var decJson = JSON.parse(jsonStr)
 
@@ -225,10 +221,10 @@ const options = {
         // replace / to \/
         newJsonStr = newJsonStr.replace(/\//g, '\\/')
         // base64 decode
-        var newBodyStr = new Buffer(newJsonStr).toString('base64')
+        var newBodyStr = Buffer.from(newJsonStr).toString('base64')
         // replace = to %3D
         newBodyStr = newBodyStr.replace(/=/g, '%3D')
-        var newBody = new Buffer(newBodyStr)
+        var newBody = Buffer.from(newBodyStr)
         response.body = newBody
         return {
           response: response
@@ -248,11 +244,27 @@ console.log('科技服务端已启动')
 console.log('端口号：' + proxyPort)
 console.log('网页端口号：' + webInterfacePort)
 
-function replaceWithArray (data, array1, array2) {
-  for (var i = 0; i < array1.length; i++) {
-    data = data.replace(new RegExp(array1[i], 'g'), array2[i])
-  }
-  data = data.replace(/\\/g, '')
+function customURLencode (data) {
+  data = data.replace(/"/g, '%22')
+  data = data.replace(/'/g, '%27')
+  data = data.replace(/:/g, '%3a')
+  data = data.replace(/,/g, '%2c')
+  data = data.replace(/\[/g, '%5b')
+  data = data.replace(/]/g, '%5d')
+  data = data.replace(/{/g, '%7b')
+  data = data.replace(/}/g, '%7d')
+  return data
+}
+
+function customURLdecode (data) {
+  data = data.replace(/%22/g, '"')
+  data = data.replace(/%27/g, "'")
+  data = data.replace(/%3a/g, ':')
+  data = data.replace(/%2c/g, ',')
+  data = data.replace(/%5b/g, '[')
+  data = data.replace(/%5d/g, ']')
+  data = data.replace(/%7b/g, '{')
+  data = data.replace(/%7d/g, '}')
   return data
 }
 
@@ -276,8 +288,3 @@ function replaceSvt (sv, id) {
 function readJSON (file) {
   return JSON.parse(fs.readFileSync(file))
 }
-
-/*
-function getsign () {
-}
-*/
