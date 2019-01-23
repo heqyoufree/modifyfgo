@@ -106,7 +106,7 @@ def isset(var):
   """Check if the is set.
 
   Keyword arguments:
-  -- the that to be checked
+  var -- the var that to be checked
   """
   try:
     var
