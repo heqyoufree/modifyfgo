@@ -52,22 +52,22 @@ foreach ($body_json_decoded['cache']['replaced']['battle'][0]['battleInfo']['use
             }
 
             if ($setting['uRpSvt']) {
-                if (($setting['uRpSvt1'] && $sv['svtId'] == "600200") || $setting['replaceSvtSpinner'] == 1) {
+                if (($setting['uRpSvt1'] && $sv['svtId'] == "600200") || $setting['uRpSvtSpinner'] == 1) {
                        replaceSvt($sv, 0);
                 }
-                if (($setting['uRpSvt2'] && $sv['svtId'] == "600100") || $setting['replaceSvtSpinner'] == 2) {
+                if (($setting['uRpSvt2'] && $sv['svtId'] == "600100") || $setting['uRpSvtSpinner'] == 2) {
                         replaceSvt($sv, 1);
                 }
-                if (($setting['uRpSvt3'] && $sv['svtId'] == "601400") || $setting['replaceSvtSpinner'] == 3) {
+                if (($setting['uRpSvt3'] && $sv['svtId'] == "601400") || $setting['uRpSvtSpinner'] == 3) {
                     replaceSvt($sv, 2);
                 }
-                if (($setting['uRpSvt4'] && $sv['svtId'] == "700900") || $setting['replaceSvtSpinner'] == 4) {
+                if (($setting['uRpSvt4'] && $sv['svtId'] == "700900") || $setting['uRpSvtSpinner'] == 4) {
                     replaceSvt($sv, 3);
                 }
-                if (($setting['uRpSvt5'] && $sv['svtId'] == "700500") || $setting['replaceSvtSpinner'] == 5) {
+                if (($setting['uRpSvt5'] && $sv['svtId'] == "700500") || $setting['uRpSvtSpinner'] == 5) {
                     replaceSvt($sv, 4);
                 }
-                if (($setting['uRpSvtt6'] && $sv['svtId'] == "701500") || $setting['replaceSvtSpinner'] == 6) {
+                if (($setting['uRpSvtt6'] && $sv['svtId'] == "701500") || $setting['uRpSvtSpinner'] == 6) {
                        replaceSvt($sv, 5);
                     $sv['treasureDeviceLv'] = 1;
                 }
