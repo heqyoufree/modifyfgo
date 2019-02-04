@@ -1,1 +1,1 @@
-{"profile":"profile/","proxyPort":8001,"webInterface":true,"webInterfacePort":8002,"silent":true,"updateKeyword":"updateUserSetting"}
+{"profile":"./profile/","proxyPort":8001,"webInterface":true,"webInterfacePort":8002,"silent":true,"updateKeyword":"updateUserSetting"}

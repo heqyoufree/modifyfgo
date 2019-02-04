@@ -5,7 +5,9 @@
   "main": "fgo.js",
   "dependencies": {
     "anyproxy": "^4.0.12",
+    "commander": "^2.19.0",
     "jshint": "^2.9.7",
+    "readline-sync": "^1.4.9",
     "standard": "^12.0.1"
   },
   "devDependencies": {},

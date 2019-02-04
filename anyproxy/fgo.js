@@ -18,7 +18,7 @@ const rl = require('readline-sync')
 program
   .version(packageInfo.version)
   .option('-c, --change', 'change global setting')
-  .option('-u, --user-setting [value]', 'change setting by uid')
+  .option('-u, --usersetting [value]', 'change setting by uid')
   .parse(process.argv)
 
 // check cert
@@ -46,19 +46,50 @@ if (!fs.existsSync(value.profile)) {
 
 if (program.change) {
   var setting = require('./setting.json')
-  setting.profile = rl.question('path of profile? (' + setting.profile + ') ') || setting.profile
-  setting.proxyPort = Number(rl.question('port of proxy server? (' + setting.proxyPort + ') ')) || setting.proxyPort
-  setting.webInterface = rl.question('enable web ui? (' + setting.webInterface + ') [true/false] ') === 'true' || setting.webInterface
+  set('path of profile?', setting.profile, 's')
+  set('port of proxy server?', setting.proxyPort, 'n')
+  set('enable web ui? ', setting.webInterface, 'b')
   if (setting.webInterface) {
-    setting.webInterfacePort = Number(rl.question('port of web ui? (' + setting.webInterfacePort + ') ')) || setting.webInterfacePort
+    set('port of web ui? ', setting.webInterfacePort, 'b')
   }
-  setting.silent = rl.question('enable silent? (' + setting.silent + ') [true/false] ') === 'true' || setting.silent
-  setting.updateKeyword = rl.question('keyword of updateing user setting? (' + setting.updateKeyword + ') ') || setting.updateKeyword
+  set('enable silent?', setting.silent, '')
+  set('keyword of updateing user setting?', setting.updateKeyword, 's')
   JSON.stringify(setting, (key, value) => {
     console.log(value)
   })
   if (rl.question('confirm your setting [y/n]') === 'y') {
     fs.writeFileSync('./setting.json', JSON.stringify(setting))
+  }
+  process.exit()
+}
+
+if (program.usersetting) {
+  var usersetting = require(value.profile + program.usersetting + 'options.json')
+  set('password of current user?', usersetting.pw, 's')
+  set('main switch?', usersetting.main, 'b')
+  set('battle cancel', usersetting.battleCancel, 'b')
+  set('act num of enemy', usersetting.eActNum, 'n')
+  set('charge turn of enemy', usersetting.eChargeTurn, 'n')
+  set('hp times of svts', usersetting.uHp, 'n')
+  set('atk times of svts', usersetting.uAtk, 'n')
+  set('skill lv switch', usersetting.uSkillLv, 'b')
+  set('treasure lv switch', usersetting.uTdLv, 'b')
+  set('limitcount switch', usersetting.uLimitCount, 'b')
+  set('replace svt total switch', usersetting.uRpSvt, 'b')
+  set('replace svt switch 1', usersetting.uRpSvt1, 'b')
+  set('replace svt switch 2', usersetting.uRpSvt2, 'b')
+  set('replace svt switch 3', usersetting.uRpSvt3, 'b')
+  set('replace svt switch 4', usersetting.uRpSvt4, 'b')
+  set('replace svt switch 5', usersetting.uRpSvt5, 'b')
+  set('replace svt switch 6', usersetting.uRpSvt6, 'b')
+  set('replace svt spinner', usersetting.uRpSvtSpinner, 'n')
+  set('replace craft switch', usersetting.uRpCraft, 'b')
+  set('replace craft spinner', usersetting.uRpCraftSpinner, 'n')
+  JSON.stringify(usersetting, (key, value) => {
+    console.log(value)
+  })
+  if (rl.question('confirm your setting [y/n]') === 'y') {
+    fs.writeFileSync('./setting.json', JSON.stringify(usersetting))
   }
   process.exit()
 }
@@ -77,3 +108,18 @@ proxyServer.start()
 console.log('科技服务端已启动')
 console.log('端口号：' + value.proxyPort)
 value.webInterface && console.log('网页端口号：' + value.webInterfacePort)
+
+function set (question, key, type) {
+  if (type === 'n') {
+    key = Number(rl.question(question + ' (' + key + ') ') || key)
+  } else if (type === 'b') {
+    var str = rl.question(question + ' (' + key + ') [true/false] ')
+    if (str === 'true') {
+      key = true
+    } else if (str === 'false') {
+      key = false
+    }
+  } else {
+    key = rl.question(question + ' (' + key + ') ') || key
+  }
+}
