@@ -29,8 +29,7 @@
 2. 在命令行中执行下列命令
   ``bash
   npm install -g modifyfgo
-  modifyfgo
-  ``
+  modifyfgo``
 3. 设置代理
 4. 在手机\模拟器上安装证书
 

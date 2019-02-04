@@ -1,5 +1,6 @@
 'use strict'
 const functions = require('./functions.js')
+const color = require('colorful')
 const value = require('./value.js')
 const fs = require('fs')
 
@@ -10,7 +11,7 @@ module.exports = {
       var uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
       var options = require(value.profile + uid + 'options.json')
       if (options.main && options.battleCancel === true) {
-        console.log(new Date().getTime() + '-' + uid + '撤退胜利')
+        console.log(color.green(new Date().getTime() + '-' + uid + '撤退胜利'))
         var data = requestDetail.requestData.toString().split('&')
         data[11] = functions.customURLdecode(data[11])
         var json = JSON.parse(data[11].substring(7))
@@ -39,9 +40,11 @@ module.exports = {
         var oldSetting = require(value.profile + newSetting['uid'] + 'options.json')
         if (oldSetting['pw'] === newSetting['pw']) {
           fs.writeFileSync(value.profile + newSetting['uid'] + 'options.json', functions.customURLdecode(requestDetail.requestData))
+          console.log(color.green(new Date().getTime() + '-' + uid + '更新设置'))
         }
       } else {
         fs.writeFileSync(value.profile + newSetting['uid'] + 'options.json', functions.customURLdecode(requestDetail.requestData))
+        console.log(color.green(new Date().getTime() + '-' + uid + '添加设置'))
       }
     }
   },
@@ -61,7 +64,7 @@ module.exports = {
 
       if (options.main && decJson['response'][0]['resCode'] === '00') {
         if (decJson['cache']['replaced']['battle'] !== undefined) {
-          console.log(new Date().getTime() + '-' + uid + '进入战斗')
+          console.log(color.green(new Date().getTime() + '-' + uid + '进入战斗'))
           var svts = decJson['cache']['replaced']['battle'][0]['battleInfo']['userSvt']
           for (var i = 0; i < svts.length; i++) {
             var sv = svts[i]

@@ -6,18 +6,19 @@
  */
 
 'use strict'
-const AnyProxy = require('anyproxy')
-const exec = require('child_process').exec
-const fs = require('fs')
-const rule = require('./rule.js')
-const value = require('./value.js')
-const program = require('commander')
 const packageInfo = require('./package.json')
+const AnyProxy = require('anyproxy')
+const program = require('commander')
+const value = require('./value.js')
+const exec = require('child_process').exec
+const rule = require('./rule.js')
+const fs = require('fs')
 const rl = require('readline-sync')
 
 program
   .version(packageInfo.version)
-  .option('-c, --change', 'change user setting')
+  .option('-c, --change', 'change global setting')
+  .option('-u, --user-setting [value]', 'change setting by uid')
   .parse(process.argv)
 
 // check cert
@@ -44,25 +45,6 @@ if (!fs.existsSync(value.profile)) {
 }
 
 if (program.change) {
-  set()
-}
-
-const options = {
-  port: value.proxyPort,
-  webInterface: {
-    enable: value.webInterface,
-    webPort: value.webInterfacePort
-  },
-  rule: rule,
-  silent: value.silent
-}
-const proxyServer = new AnyProxy.ProxyServer(options)
-proxyServer.start()
-console.log('科技服务端已启动')
-console.log('端口号：' + value.proxyPort)
-console.log('网页端口号：' + value.webInterfacePort)
-
-function set () {
   var setting = require('./setting.json')
   setting.profile = rl.question('path of profile? (' + setting.profile + ') ') || setting.profile
   setting.proxyPort = Number(rl.question('port of proxy server? (' + setting.proxyPort + ') ')) || setting.proxyPort
@@ -80,3 +62,18 @@ function set () {
   }
   process.exit()
 }
+
+const options = {
+  port: value.proxyPort,
+  webInterface: {
+    enable: value.webInterface,
+    webPort: value.webInterfacePort
+  },
+  rule: rule,
+  silent: value.silent
+}
+const proxyServer = new AnyProxy.ProxyServer(options)
+proxyServer.start()
+console.log('科技服务端已启动')
+console.log('端口号：' + value.proxyPort)
+value.webInterface && console.log('网页端口号：' + value.webInterfacePort)
