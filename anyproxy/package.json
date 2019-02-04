@@ -1,0 +1,28 @@
+{
+  "name": "modifyfgo",
+  "version": "1.7.5",
+  "description": "modify data of fgo",
+  "main": "fgo.js",
+  "dependencies": {
+    "anyproxy": "^4.0.12",
+    "jshint": "^2.9.7",
+    "standard": "^12.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heqyoufree/ModifyFGO.git"
+  },
+  "author": "heqyou_free",
+  "bin": {
+    "modifyfgo": "./fgo.js"
+  },
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/heqyoufree/ModifyFGO/issues"
+  },
+  "homepage": "https://github.com/heqyoufree/ModifyFGO#readme"
+}

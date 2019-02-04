@@ -1,17 +1,18 @@
 'use strict'
+var setting = require('./setting.json')
 // USER SETTING
 // user setting path
-const profile = 'profile/'
+const profile = setting.profile
 // Proxy Port
-const proxyPort = 8001
+const proxyPort = setting.proxyPort
 // Web UI
-const webInterface = true
+const webInterface = setting.webInterface
 // Web Port
-const webInterfacePort = 8002
+const webInterfacePort = setting.webInterfacePort
 // show anyproxy log in console
-const silent = false
+const silent = setting.silent
 // keyword of update user setting
-const updateKeyword = 'updateUserSetting'
+const updateKeyword = setting.updateKeyword
 module.exports = {
   profile: profile,
   proxyPort: proxyPort,

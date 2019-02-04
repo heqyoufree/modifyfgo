@@ -153,8 +153,5 @@ module.exports = {
         response: response
       }
     }
-  },
-  * beforeDealHttpsRequest (requestDetail) {
-    return requestDetail.host.indexOf('tw') > 0
   }
 }
