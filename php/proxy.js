@@ -1,23 +1,20 @@
+#!/usr/bin/env node
 /**
  * Available on anyproxy
  */
 
 'use strict'
 const AnyProxy = require('anyproxy')
+const program = require('commander')
+const value = require('./setting.json')
 const exec = require('child_process').exec
 const http = require('http')
+const rl = require('readline-sync')
+const fs = require('fs')
 
-// USER SETTING
-// Server Host
-const host = '127.0.0.1'
-// Proxy Port
-const proxyPort = 8001
-// Web UI
-const webInterface = false
-// Web Port
-const webInterfacePort = 8002
-// show anyproxy log in console
-const silent = true
+program
+  .option('-c, --change', 'change global setting')
+  .parse(process.argv)
 
 // check cert
 if (!AnyProxy.utils.certMgr.ifRootCAFileExists()) {
@@ -34,11 +31,32 @@ if (!AnyProxy.utils.certMgr.ifRootCAFileExists()) {
   })
 }
 
+if (program.change || value.setted) {
+  var setting = require('./setting.json')
+  set('path of profile?', setting.profile, 's')
+  set('port of proxy server?', setting.proxyPort, 'n')
+  set('enable web ui? ', setting.webInterface, 'b')
+  if (setting.webInterface) {
+    set('port of web ui? ', setting.webInterfacePort, 'b')
+  }
+  set('enable silent?', setting.silent, '')
+  set('keyword of updateing user setting?', setting.updateKeyword, 's')
+  delete setting.setted
+  JSON.stringify(setting, (key, value) => {
+    console.log(value)
+  })
+  setting.setted = true
+  if (rl.question('confirm your setting [y/n]') === 'y') {
+    fs.writeFileSync('./setting.json', JSON.stringify(setting))
+  }
+  process.exit()
+}
+
 const options = {
-  port: proxyPort,
+  port: value.proxyPort,
   webInterface: {
-    enable: webInterface,
-    webPort: webInterfacePort
+    enable: value.webInterface,
+    webPort: value.webInterfacePort
   },
   rule: {
     summary: 'ModifyFGO Client by heqyou_free',
@@ -60,17 +78,17 @@ const options = {
       return !requestDetail.host.indexOf('bilibiligame.net') > 0
     }
   },
-  silent: silent
+  silent: value.silent
 }
 const proxyServer = new AnyProxy.ProxyServer(options)
 proxyServer.start()
 console.log('科技客户端已启动')
-console.log('端口号：' + proxyPort)
-console.log('网页端口号：' + webInterfacePort)
+console.log('端口号：' + value.proxyPort)
+console.log('网页端口号：' + value.webInterfacePort)
 
 function sendPOST (request, path) {
   var options = {
-    host: host,
+    host: value.host,
     path: path,
     method: 'POST',
     headers: {
@@ -86,4 +104,19 @@ function sendPOST (request, path) {
   })
   req.write(request)
   req.end()
+}
+
+function set (question, key, type) {
+  if (type === 'n') {
+    key = Number(rl.question(question + ' (' + key + ') ') || key)
+  } else if (type === 'b') {
+    var str = rl.question(question + ' (' + key + ') [true/false] ')
+    if (str === 'true') {
+      key = true
+    } else if (str === 'false') {
+      key = false
+    }
+  } else {
+    key = rl.question(question + ' (' + key + ') ') || key
+  }
 }

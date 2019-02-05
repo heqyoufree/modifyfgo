@@ -9,11 +9,11 @@
 const packageInfo = require('./package.json')
 const AnyProxy = require('anyproxy')
 const program = require('commander')
-const value = require('./value.js')
+const value = require('./setting.json')
 const exec = require('child_process').exec
 const rule = require('./rule.js')
-const fs = require('fs')
 const rl = require('readline-sync')
+const fs = require('fs')
 
 program
   .version(packageInfo.version)
@@ -44,7 +44,7 @@ if (!fs.existsSync(value.profile)) {
   fs.mkdirSync(value.profile)
 }
 
-if (program.change) {
+if (program.change || value.setted) {
   var setting = require('./setting.json')
   set('path of profile?', setting.profile, 's')
   set('port of proxy server?', setting.proxyPort, 'n')
@@ -54,9 +54,11 @@ if (program.change) {
   }
   set('enable silent?', setting.silent, '')
   set('keyword of updateing user setting?', setting.updateKeyword, 's')
+  delete setting.setted
   JSON.stringify(setting, (key, value) => {
     console.log(value)
   })
+  setting.setted = true
   if (rl.question('confirm your setting [y/n]') === 'y') {
     fs.writeFileSync('./setting.json', JSON.stringify(setting))
   }
