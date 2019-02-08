@@ -66,7 +66,11 @@ if (program.change || value.setted) {
 }
 
 if (program.usersetting) {
-  var usersetting = require(value.profile + program.usersetting + 'options.json')
+  var path = value.profile + program.usersetting + 'options.json'
+  if (!fs.existsSync(path)) {
+    fs.writeFileSync(path, '')
+  }
+  var usersetting = require(path)
   set('password of current user?', usersetting.pw, 's')
   set('main switch?', usersetting.main, 'b')
   set('battle cancel', usersetting.battleCancel, 'b')
@@ -91,7 +95,7 @@ if (program.usersetting) {
     console.log(value)
   })
   if (rl.question('confirm your setting [y/n]') === 'y') {
-    fs.writeFileSync('./setting.json', JSON.stringify(usersetting))
+    fs.writeFileSync(path, JSON.stringify(usersetting))
   }
   process.exit()
 }
