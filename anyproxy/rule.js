@@ -1,7 +1,7 @@
 'use strict'
 const functions = require('./functions.js')
 const color = require('colorful')
-const value = require('./value.js')
+const value = require('./setting.json')
 const fs = require('fs')
 
 module.exports = {
