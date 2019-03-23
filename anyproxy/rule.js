@@ -1,4 +1,5 @@
 'use strict'
+/* eslint no-eval: 0 */
 const functions = require('./functions.js')
 const color = require('colorful')
 const value = require('./setting.json')
@@ -7,24 +8,24 @@ const fs = require('fs')
 module.exports = {
   summary: 'ModifyFGO by heqyou_free',
   * beforeSendRequest (requestDetail) {
+    let newRequestData = ''
     if (requestDetail.url.test('ac.php') && requestDetail.requestData.test('key=battleresult')) {
-      var uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
-      var options = require(value.profile + uid + 'options.json')
+      let uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
+      let options = require(value.profile + uid + 'options.json')
       if (options.main && options.battleCancel === true) {
         console.log(color.green(new Date().getTime() + '-' + uid + '撤退胜利'))
-        var data = requestDetail.requestData.toString().split('&')
+        let data = requestDetail.requestData.toString().split('&')
         data[11] = functions.customURLdecode(data[11])
-        var json = JSON.parse(data[11].substring(7))
+        let json = JSON.parse(data[11].substring(7))
         if (json.battleResult === 3) {
           json.battleResult = 1
           json.elapsedTurn = 11
           json.aliveUniqueIds = []
-          var temp = JSON.stringify(json)
+          let temp = JSON.stringify(json)
           data[11] = 'result=' + functions.customURLencode(temp)
-          var newRequestData = ''
           data.forEach(value => {
             newRequestData += value
-            for (var i = 1; i < data.length; i++) {
+            for (let i = 1; i < data.length; i++) {
               newRequestData += '&'
             }
           })
@@ -35,9 +36,10 @@ module.exports = {
       }
     }
     if (requestDetail.url.test(value.updateKeyword)) {
-      var newSetting = JSON.parse(functions.customURLdecode(requestDetail.requestData))
+      let uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
+      let newSetting = JSON.parse(functions.customURLdecode(requestDetail.requestData))
       if (fs.existsSync(value.profile + newSetting['uid'] + 'options.json')) {
-        var oldSetting = require(value.profile + newSetting['uid'] + 'options.json')
+        let oldSetting = require(value.profile + newSetting['uid'] + 'options.json')
         if (oldSetting['pw'] === newSetting['pw']) {
           fs.writeFileSync(value.profile + newSetting['uid'] + 'options.json', functions.customURLdecode(requestDetail.requestData))
           console.log(color.green(new Date().getTime() + '-' + uid + '更新设置'))
@@ -51,23 +53,23 @@ module.exports = {
 
   * beforeSendResponse (requestDetail, responseDetail) {
     if ((requestDetail.requestData.test('key=battlesetup') || requestDetail.requestData.test('key=battleresume')) && requestDetail.url.test('ac.php')) {
-      var response = Object.assign({}, responseDetail.response)
-      var rawBody = response.body.toString()
+      let response = Object.assign({}, responseDetail.response)
+      let rawBody = response.body.toString()
       rawBody = rawBody.replace(/%3D/g, '=')
-      var jsonStr = Buffer.from(rawBody, 'base64').toString()
-      var decJson = JSON.parse(jsonStr)
+      let jsonStr = Buffer.from(rawBody, 'base64').toString()
+      let decJson = JSON.parse(jsonStr)
 
       decJson.sign = ''
 
-      var uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
-      var options = require(value.profile + uid + 'options.json')
+      let uid = requestDetail.url.match(/(?<=userId=)\d{12}/gi)
+      let options = require(value.profile + uid + 'options.json')
 
       if (options.main && decJson['response'][0]['resCode'] === '00') {
         if (decJson['cache']['replaced']['battle'] !== undefined) {
           console.log(color.green(new Date().getTime() + '-' + uid + '进入战斗'))
-          var svts = decJson['cache']['replaced']['battle'][0]['battleInfo']['userSvt']
-          for (var i = 0; i < svts.length; i++) {
-            var sv = svts[i]
+          let svts = decJson['cache']['replaced']['battle'][0]['battleInfo']['userSvt']
+          for (let i = 0; i < svts.length; i++) {
+            let sv = svts[i]
             if (sv['hpGaugeType'] !== undefined) {
               if (options.eActNum > -1) {
                 sv['maxActNum'] = options.eActNum
@@ -108,39 +110,26 @@ module.exports = {
               }
 
               if (options.uRpSvt) {
-                if ((options.uRpSvt1 && sv['svtId'] === '600200') || options.uRpSvtSpinner === 1) {
-                  functions.replaceSvt(sv, 0)
-                }
-                if ((options.uRpSvt2 && sv['svtId'] === '600100') || options.uRpSvtSpinner === 2) {
-                  functions.replaceSvt(sv, 1)
-                }
-                if ((options.uRpSvt3 && sv['svtId'] === '601400') || options.uRpSvtSpinner === 3) {
-                  functions.replaceSvt(sv, 2)
-                }
-                if ((options.uRpSvt4 && sv['svtId'] === '700900') || options.uRpSvtSpinner === 4) {
-                  functions.replaceSvt(sv, 3)
-                }
-                if ((options.uRpSvt5 && sv['svtId'] === '700500') || options.uRpSvtSpinner === 5) {
-                  functions.replaceSvt(sv, 4)
-                }
-                if ((options.uRpSvt6 && sv['svtId'] === '701500') || options.uRpSvtSpinner === 6) {
-                  functions.replaceSvt(sv, 5)
-                  sv['treasureDeviceLv'] = 1
+                let svtId = ['600200', '600100', '601400', '700900', '700500', '701500']
+                for (let i = 0; i < svtId.length; i++) {
+                  if ((eval('options.uRpSvt' + i) && sv['svtId'] === svtId[i]) || options.uRpSvtSpinner === i + 1) {
+                    functions.replaceSvt(sv, i)
+                  }
                 }
                 continue
               }
             }
 
             if (options.uRpCraft && sv['parentSvtId'] !== undefined) {
-              var carftMap = require('data.json')
+              let carftMap = require('data.json')
               sv['skillId1'] = carftMap.craft[options.uRpCraftSpinner - 1]
             }
           }
         }
       }
 
-      var newJsonStr = JSON.stringify(decJson)
-      var cnReg = /[\u0391-\uFFE5]/gm
+      let newJsonStr = JSON.stringify(decJson)
+      let cnReg = /[\u0391-\uFFE5]/gm
       if (cnReg.test(newJsonStr)) {
         newJsonStr = newJsonStr.replace(cnReg,
           function (str) {
@@ -148,9 +137,9 @@ module.exports = {
           })
       }
       newJsonStr = newJsonStr.replace(/\//g, '\\/')
-      var newBodyStr = Buffer.from(newJsonStr).toString('base64')
+      let newBodyStr = Buffer.from(newJsonStr).toString('base64')
       newBodyStr = newBodyStr.replace(/=/g, '%3D')
-      var newBody = Buffer.from(newBodyStr)
+      let newBody = Buffer.from(newBodyStr)
       response.body = newBody
       return {
         response: response

@@ -13,14 +13,17 @@
 require_once 'value.php';
 require_once 'function.php';
 
-$body = urldecode($_POST["requestData"]);
-$setting_new = json_decode($body, true);
+$setting_new = json_decode(urldecode($_POST["requestData"]), true);
 if (file_exists($setting_path.$setting_new['uid'].'json')) {
     $setting_old = readJSON($setting_new['uid']);
     if ($setting_new['pw'] == $setting_old['pw']) {
         writeJSON($setting_path.$setting_new['uid']);
+        echo 'Successed';
+    } else {
+        echo 'Failed';
     }
 } else {
     writeJSON($setting_path.$setting_new['uid']);
+    echo 'Successed';
 }
 ?>

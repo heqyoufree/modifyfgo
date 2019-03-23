@@ -8,7 +8,8 @@
 			"sk3": 324650,
 			"hp": 14246,
 			"atk": 12767,
-			"limit": false
+			"limit": false,
+			"operation": ""
 		},
 		{
 			"id": 500800,
@@ -18,7 +19,8 @@
 			"sk3": 323650,
 			"hp": 15259,
 			"atk": 11546,
-			"limit": false
+			"limit": false,
+			"operation": ""
 		},
 		{
 			"id": 501900,
@@ -28,7 +30,8 @@
 			"sk3": 101551,
 			"hp": 14409,
 			"atk": 11598,
-			"limit": false
+			"limit": false,
+			"operation": ""
 		},
 		{
 			"id": 500300,
@@ -38,7 +41,8 @@
 			"sk3": 108655,
 			"hp": 15359,
 			"atk": 11546,
-			"limit": false
+			"limit": false,
+			"operation": ""
 		},
 		{
 			"id": 702300,
@@ -48,7 +52,8 @@
 			"sk3": 225550,
 			"hp": 14500,
 			"atk": 12556,
-			"limit": false
+			"limit": false,
+			"operation": ""
 		},
 		{
 			"id": 9935510,
@@ -58,7 +63,8 @@
 			"sk3": 108655,
 			"hp": 3215500,
 			"atk": 3215500,
-			"limit": true
+			"limit": true,
+			"operation": "sv['treasureDeviceLv'] = 1"
 		}
     ],
     "craft": [

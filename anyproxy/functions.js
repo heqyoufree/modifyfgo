@@ -1,3 +1,5 @@
+'use strict'
+/* eslint no-eval: 0 */
 module.exports = {
   * customURLencode (data) {
     data = data.replace(/"/g, '%22')
@@ -24,7 +26,7 @@ module.exports = {
   },
 
   * replaceSvt (sv, id) {
-    var data = require('data.json')
+    let data = require('data.json')
     sv['svtId'] = data.svt[id].id
     sv['treasureDeviceId'] = data.svt[id].tdid
     sv['skillId1'] = data.svt[id].sk1
@@ -37,6 +39,9 @@ module.exports = {
       sv['dispLimitCount'] = 0
       sv['commandCardLimitCount'] = 0
       sv['iconLimitCount'] = 0
+    }
+    if (data.svt[id].operation !== '') {
+      eval(data.svt[id].operation)
     }
   }
 }

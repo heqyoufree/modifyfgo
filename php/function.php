@@ -63,6 +63,9 @@ function replaceSvt($sv, $id)
         $sv['commandCardLimitCount'] = 0;
         $sv['iconLimitCount'] = 0;
     }
+    if ($svtData['svt'][$id]['operation'] !== "") {
+        eval($svtData['svt'][$id]['operation']);
+    }
 }
 
 /** 
@@ -88,5 +91,4 @@ function customURLdecode($data)
 {
     return str_replace($encode, $decode, $data);
 }
-
 ?>

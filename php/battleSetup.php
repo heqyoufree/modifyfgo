@@ -11,10 +11,7 @@
  * @link     https://github.com/heqyoufree/ModifyFGO
  */
 require_once 'function.php';
-echo var_dump($_POST);
-$body = customURLdecode($_POST["requestData"]);
-$body_decoded = base64_decode($body);
-$body_json_decoded = json_decode($body_decoded, true);
+$body_json_decoded = json_decode(base64_decode(customURLdecode($_POST["requestData"]), true));
     
 $setting = readJSON($body_json_decoded['cache']['replaced']['battle']['userId']);
 
@@ -52,24 +49,11 @@ foreach ($body_json_decoded['cache']['replaced']['battle'][0]['battleInfo']['use
             }
 
             if ($setting['uRpSvt']) {
-                if (($setting['uRpSvt1'] && $sv['svtId'] == "600200") || $setting['uRpSvtSpinner'] == 1) {
-                       replaceSvt($sv, 0);
-                }
-                if (($setting['uRpSvt2'] && $sv['svtId'] == "600100") || $setting['uRpSvtSpinner'] == 2) {
-                        replaceSvt($sv, 1);
-                }
-                if (($setting['uRpSvt3'] && $sv['svtId'] == "601400") || $setting['uRpSvtSpinner'] == 3) {
-                    replaceSvt($sv, 2);
-                }
-                if (($setting['uRpSvt4'] && $sv['svtId'] == "700900") || $setting['uRpSvtSpinner'] == 4) {
-                    replaceSvt($sv, 3);
-                }
-                if (($setting['uRpSvt5'] && $sv['svtId'] == "700500") || $setting['uRpSvtSpinner'] == 5) {
-                    replaceSvt($sv, 4);
-                }
-                if (($setting['uRpSvtt6'] && $sv['svtId'] == "701500") || $setting['uRpSvtSpinner'] == 6) {
-                       replaceSvt($sv, 5);
-                    $sv['treasureDeviceLv'] = 1;
+                $svtId = [600200,600100,601400,700900,700500,701500];
+                for ($i = 0; $i < $svtId.length; $i++) {
+                    if ((eval('options.uRpSvt'+i) && $sv['svtId'] == $svtId[i]) || $setting['uRpSvtSpinner'] == i+1) {
+                        replaceSvt($sv, $i);
+                    }
                 }
                 continue;
             }
@@ -82,8 +66,5 @@ foreach ($body_json_decoded['cache']['replaced']['battle'][0]['battleInfo']['use
 }
 unset($sv);
 unset($svts);
-$response_json_encoded = json_encode($body_json_decoded);
-$response_encoded = base64_encode($response_json_encoded);
-$response = customURLencode($response_encoded);
-echo $response_encoded;
+echo customURLencode(base64_encode(json_encode($body_json_decoded)));
 ?>
